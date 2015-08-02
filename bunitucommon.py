@@ -4,7 +4,7 @@
 __AUTHOR__ = 'Sergei Frankoff, hasherezade'
 __VERSION__ = '1.0'
 
-from util import * #available here: http://dumpz.org/1612385/
+from util import *
 
 ###bitbang lib##
 # Author: Satoshi Tanda
