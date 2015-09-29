@@ -62,15 +62,19 @@ def main():
     parser.add_argument('--genid',dest="gen_id",default=False, action='store_true',help="Generate a new bot id string and quit.")
     parser.add_argument('--once',dest="once",default=False, action='store_true',help="Only send one request. The default is to repeatedly send requests ever 10min to mimic the real bot.")
     parser.add_argument('--ip', dest="cnc_ip",default=None, help="C&C (explicit) IP")
-    parser.add_argument('--host', dest="cnc_host",default=HOST_1, help="C&C Host (alternative for explicit IP, use internal algorithm to get C&C IP), default=" + HOST_1)
+    parser.add_argument('--host', dest="cnc_host",default=None, help="C&C Host (alternative for explicit IP, use internal algorithm to get C&C IP)")
     parser.add_argument('--port', dest="cnc_port",default=PORT_1, help="C&C port, default=%d" % PORT_1, type=int)
-    parser.add_argument('--xorval', dest="cnc_xorval",default=XORVALUE, help="XOR value used to resolve C&C IP, default=%d (0x%x)" % (XORVALUE, XORVALUE), type=int)
+    parser.add_argument('--xorval', dest="cnc_xorval",default=str(XORVALUE), help="XOR value used to resolve C&C IP, default=%d (0x%x)" % (XORVALUE, XORVALUE))
     args = parser.parse_args()
     
     #if they just want a new bot id generate it and print
     if args.gen_id:
         bot_id = make_new_bot_id()
         dump_bytes(bot_id, "\\x", True)
+        exit()
+
+    if args.cnc_ip is None and args.cnc_host is None:
+        print "Invalid parameters: either C&C IP or Host Name must be filled!"
         exit()
 
     if args.new_id:
@@ -82,11 +86,13 @@ def main():
     print "#"
 
     target_port = args.cnc_port
+    xorv = str_to_int(args.cnc_xorval)
+    print "XOR = %x" % xorv
 
     if args.cnc_ip:
         target_ip = socket.gethostbyname(args.cnc_ip)
     else:
-        target_ip = get_c2_ip(args.cnc_host, args.cnc_xorval)
+        target_ip = get_c2_ip(args.cnc_host, xorv)
     print "C&C#1: %s:%d" % (target_ip, target_port)
 
     payload = BotPayload1_t(bot_id)

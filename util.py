@@ -11,6 +11,15 @@ import random
 import re
 
 ####
+# convertion util
+#
+def str_to_int(string):
+    string = string.lower()
+    if string.startswith("0x"):
+        return int(string,16)
+    return int(string)
+
+####
 # byte util
 #
 def dump_bytes(bytes_arr, delim=" ", prompt_by_delim=False):

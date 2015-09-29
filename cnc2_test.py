@@ -140,10 +140,10 @@ def main():
     parser.add_argument('--id',dest="new_id",default=None,help="Specify a new bot id to use. This must be a binary string. Use the --genid command to generate one.")
     parser.add_argument('--genid',dest="gen_id",default=False, action='store_true',help="Generate a new bot id string and quit.")
     parser.add_argument('--verbose', dest="verbose",default=VERBOSE, action='store_true',help="Deploy script in verbose mode.")
-    parser.add_argument('--host', dest="cnc_host",default=TUNNEL_HOST, help="C&C Host (alternative for explicit IP, use internal algorithm to get C&C IP), default=" + TUNNEL_HOST)
+    parser.add_argument('--host', dest="cnc_host",default=None, help="C&C Host Name (alternative for explicit IP, use internal algorithm to get C&C IP)")
     parser.add_argument('--ip', dest="cnc_ip",default=None, help="C&C (explicit) IP")
     parser.add_argument('--port', dest="cnc_port",default=PORT_1, help="C&C port, default=%d" % PORT_1, type=int)
-    parser.add_argument('--xorval', dest="cnc_xorval",default=XORVALUE, help="XOR value used to resolve C&C IP, default=%d (0x%x)" % (XORVALUE, XORVALUE), type=int)
+    parser.add_argument('--xorval', dest="cnc_xorval",default=str(XORVALUE), help="XOR value used to resolve C&C IP, default=%d (0x%x)" % (XORVALUE, XORVALUE))
     parser.add_argument('--timeout', dest="cnc_timeout",default=PORT_1, help="Timeout fot C&C response, default=%d" % TIMEOUT, type=int)
 
     args = parser.parse_args()
@@ -155,6 +155,10 @@ def main():
         dump_bytes(bot_id, "\\x", True)
         exit()
 
+    if args.cnc_ip is None and args.cnc_host is None:
+        print "Invalid parameters: either C&C IP or Host Name must be filled!"
+        exit()
+
     if args.new_id:
         bot_id = get_bytes(args.new_id)
     else:
@@ -164,10 +168,13 @@ def main():
     print "#"
     
     target_port = args.cnc_port
+    xorv = str_to_int(args.cnc_xorval)
+    print "XOR = %x" % xorv
+
     if args.cnc_ip:
         target_ip = socket.gethostbyname(args.cnc_ip)
     else:
-        target_ip = get_c2_ip(args.cnc_host, args.cnc_xorval)  
+        target_ip = get_c2_ip(args.cnc_host, xorv)  
     print "C&C#2 (Tunnel): %s:%d" % (target_ip, target_port)
     
     payload = BotPayload_t(bot_id)
