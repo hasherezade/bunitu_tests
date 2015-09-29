@@ -169,11 +169,11 @@ def main():
     
     target_port = args.cnc_port
     xorv = str_to_int(args.cnc_xorval)
-    print "XOR = %x" % xorv
 
     if args.cnc_ip:
         target_ip = socket.gethostbyname(args.cnc_ip)
     else:
+        print "XOR = %x" % xorv
         target_ip = get_c2_ip(args.cnc_host, xorv)  
     print "C&C#2 (Tunnel): %s:%d" % (target_ip, target_port)
     
