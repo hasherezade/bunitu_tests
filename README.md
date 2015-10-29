@@ -11,4 +11,5 @@ Files:
 + cnc1_test.py - registers your host as a proxy bot in the Bunitu botnet (communicate with C&C#1)
 + cnc2_test.py - checks if the given host is a Bunitu Tunneling C&C (communicate with C&C#2)
 
-More info: https://github.com/hasherezade/bunitu_tests/wiki
+How to use scripts: https://github.com/hasherezade/bunitu_tests/wiki <br/>
+What Bunitu is (slides): https://www.virusbtn.com/pdf/conference_slides/2015/FrankoffHasherezade-VB2015.pdf
